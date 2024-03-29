@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "647766014053",
+    "project_id": "toothnote-97696",
+    "storage_bucket": "toothnote-97696.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647766014053:android:d369ee3f58e640edc76e8c",
+        "android_client_info": {
+          "package_name": "com.example.tooth_note"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzf19uK7rJS0UySWNqCeUuyBA0s9gxlzY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

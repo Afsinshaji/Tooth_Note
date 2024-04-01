@@ -5,6 +5,7 @@ import 'package:tooth_note/application/view_dto/drug_history/drug_history.dart';
 import 'package:tooth_note/application/view_dto/examination_details/examination_details.dart';
 import 'package:tooth_note/application/view_dto/lab_investigation/lab_investigation.dart';
 import 'package:tooth_note/application/view_dto/medical_history.dart/medical_history.dart';
+import 'package:tooth_note/application/view_dto/new_appointment/new_appointment.dart';
 import 'package:tooth_note/application/view_dto/past_dental_history/past_dental_history.dart';
 import 'package:tooth_note/application/view_dto/payments/payments.dart';
 import 'package:tooth_note/application/view_dto/points/points.dart';
@@ -34,6 +35,8 @@ class PatientsDetailsDTO {
   final LabInvestigationDTO? labInvestigation;
   final PaymentsDTO? payments;
   final String dob;
+  final String doctor;
+  final NewAppointmentDTO? newAppointment;
 
   PatientsDetailsDTO(
       {required this.patientName,
@@ -41,10 +44,11 @@ class PatientsDetailsDTO {
       required this.address,
       required this.phoneNumber,
       required this.age,
-      required this.sex,
+      required this.sex,required this.doctor,
       this.labInvestigation,
       this.payments,
       this.patientId,
+      this.newAppointment,
       required this.date,
       this.medicalHistory,
       this.chiefComplaints,
@@ -60,6 +64,7 @@ class PatientsDetailsDTO {
 
   PatientsDetails toModel() {
     return PatientsDetails(
+      doctor: doctor,
       dob: dob,
       patientName: patientName,
       patientNumber: patientNumber,
@@ -71,6 +76,7 @@ class PatientsDetailsDTO {
           ? 'Patient:${DateTime.now().millisecondsSinceEpoch.toString()}'
           : patientId!,
       date: date,
+      newAppointment: newAppointment == null ? null : newAppointment!.toModel(),
       payments: payments == null ? null : payments!.toModel(),
       labInvestigation:
           labInvestigation == null ? null : labInvestigation!.toModel(),
@@ -94,6 +100,7 @@ class PatientsDetailsDTO {
 
   static PatientsDetailsDTO fromModel(PatientsDetails patient) {
     return PatientsDetailsDTO(
+      doctor: patient.doctor,
       dob: patient.dob,
       patientName: patient.patientName,
       patientNumber: patient.patientNumber,
@@ -103,6 +110,7 @@ class PatientsDetailsDTO {
       sex: patient.sex,
       patientId: patient.patientId,
       date: patient.date,
+      newAppointment: NewAppointmentDTO.fromModel(patient.newAppointment),
       payments: PaymentsDTO.fromModel(patient.payments),
       labInvestigation: LabInvestigationDTO.fromModel(patient.labInvestigation),
       medicalHistory: MedicalHistoryDTO.fromModel(patient.medicalHistory),

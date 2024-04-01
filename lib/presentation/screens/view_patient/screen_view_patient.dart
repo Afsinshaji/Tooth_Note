@@ -17,6 +17,7 @@ import 'package:tooth_note/presentation/screens/examination_details/screen_exami
 import 'package:tooth_note/presentation/screens/lab_investigation/screen_lab_investigation.dart';
 import 'package:tooth_note/presentation/screens/medical_history/screen_medical_history.dart';
 import 'package:tooth_note/presentation/screens/message/screen_message.dart';
+import 'package:tooth_note/presentation/screens/new_appointment/screen_new_appointment.dart';
 import 'package:tooth_note/presentation/screens/payment/screen_add_payment.dart';
 import 'package:tooth_note/presentation/screens/payment/screen_payments.dart';
 import 'package:tooth_note/presentation/screens/pdf/test.dart';
@@ -51,9 +52,11 @@ class ViewPatientScreen extends ConsumerWidget {
           double totalfee = 0.0;
           for (var pay in patientDTO!.payments!.payments) {
             if (pay['isInstallment'] == true) {
-              totalInstallment = totalInstallment + double.parse(pay['amount']);
+              totalInstallment = totalInstallment +
+                  double.parse(pay['amount'].isEmpty ? '0.0' : pay['amount']);
             } else {
-              totalfee = totalfee + double.parse(pay['amount']);
+              totalfee = totalfee +
+                  double.parse(pay['amount'].isEmpty ? '0.0' : pay['amount']);
             }
           }
           due = totalfee - totalInstallment;
@@ -119,7 +122,9 @@ class ViewPatientScreen extends ConsumerWidget {
                       color: ToothNoteColors.backgroundColor,
                       alignment: Alignment.center,
                       child: Text(
-                        patientDTO!.patientName,
+                        patientDTO!.patientName.isEmpty
+                            ? 'Nil'
+                            : patientDTO!.patientName,
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                             fontSize: size.width * 0.05,
@@ -213,12 +218,16 @@ class ViewPatientScreen extends ConsumerWidget {
                           FielAndValueText(
                               size: size,
                               field: 'Patient Number',
-                              value: patientDTO!.patientNumber),
+                              value: patientDTO!.patientNumber.isEmpty
+                                  ? 'Nil'
+                                  : patientDTO!.patientNumber),
                           SizedBox(width: size.width * 0.25),
                           FielAndValueText(
                               size: size,
                               field: 'Phone Number',
-                              value: patientDTO!.phoneNumber),
+                              value: patientDTO!.phoneNumber.isEmpty
+                                  ? 'Nil'
+                                  : patientDTO!.phoneNumber),
                         ],
                       ),
                       SizedBox(
@@ -229,10 +238,18 @@ class ViewPatientScreen extends ConsumerWidget {
                           FielAndValueText(
                               size: size,
                               field: 'Age',
-                              value: patientDTO!.age.toString()),
+                              value: patientDTO!.age == 0.0 && dob != null
+                                  ? calculateAge(dob).toString()
+                                  : patientDTO!.age == 0.0
+                                      ? 'Nil'
+                                      : patientDTO!.age.toString()),
                           SizedBox(width: size.width * 0.5),
                           FielAndValueText(
-                              size: size, field: 'Sex', value: patientDTO!.sex),
+                              size: size,
+                              field: 'Sex',
+                              value: patientDTO!.sex.isEmpty
+                                  ? 'Nil'
+                                  : patientDTO!.sex),
                         ],
                       ),
                       SizedBox(
@@ -246,11 +263,17 @@ class ViewPatientScreen extends ConsumerWidget {
                             child: FielAndValueText(
                                 size: size,
                                 field: 'Address',
-                                value: patientDTO!.address),
+                                value: patientDTO!.address.isEmpty
+                                    ? 'Nil'
+                                    : patientDTO!.address),
                           ),
                           SizedBox(width: size.width * 0.09),
                           FielAndValueText(
-                              size: size, field: 'Due', value: '₹$due'),
+                              size: size,
+                              field: 'Doctor',
+                              value: patientDTO!.doctor.isEmpty
+                                  ? 'Nil'
+                                  : patientDTO!.doctor),
                         ],
                       ),
                       SizedBox(
@@ -489,6 +512,22 @@ class ViewPatientScreen extends ConsumerWidget {
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute(
+                                  builder: (context) =>
+                                      const NewAppointmentScreen(),
+                                ));
+                          },
+                          prefixIcon: Icons.table_chart,
+                          subtitle: 'Add New Appointment',
+                          title: 'New Appointment'),
+                      SizedBox(
+                        height: size.height * 0.025,
+                      ),
+                      Detailscontainer(
+                          onTap: () {
+                            initializeDate(ref);
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
                                   builder: (context) => const PointsScreen(),
                                 ));
                           },
@@ -505,6 +544,23 @@ class ViewPatientScreen extends ConsumerWidget {
       },
     );
   }
+
+  int calculateAge(DateTime dob) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - dob.year;
+    int month1 = currentDate.month;
+    int month2 = dob.month;
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = dob.day;
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    return age;
+  }
 }
 
 class EditButton extends ConsumerWidget {
@@ -520,6 +576,8 @@ class EditButton extends ConsumerWidget {
     return IconButton(
         onPressed: () {
           addTime(DateTime.parse(patientDTO!.date), ref);
+          addDOB(DateTime.parse(patientDTO!.dob.isEmpty?DateTime.now().toString()
+          :patientDTO!.dob), ref);
           Navigator.push(
               context,
               MaterialPageRoute(

@@ -101,8 +101,8 @@ class _DrugAllergyScreenState extends State<DrugAllergyScreen> {
                         .add(PatientEvent.addPatient(
                             patient: PatientsDetailsDTO( payments: patient.payments,
                       patientName: patient.patientName,  dob: patient.dob,
-                      patientNumber: patient.patientNumber,
-                      address: patient.address,
+                      patientNumber: patient.patientNumber, newAppointment: patient.newAppointment,
+                      address: patient.address,doctor: patient.doctor,
                       phoneNumber: patient.phoneNumber,
                       age: patient.age,
                       sex: patient.sex,

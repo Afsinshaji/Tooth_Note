@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tooth_note/application/all_patients/all_patients_bloc.dart';
 import 'package:tooth_note/application/patient/patient_bloc.dart';
-import 'package:tooth_note/application/view_dto/examination_details/examination_details.dart';
+import 'package:tooth_note/application/view_dto/new_appointment/new_appointment.dart';
 import 'package:tooth_note/application/view_dto/patients/patients.dart';
 import 'package:tooth_note/presentation/screens/add_patient/screen_add_patient.dart';
 import 'package:tooth_note/presentation/screens/chief_complaints/screen_add_chief_complaints.dart';
@@ -13,26 +15,32 @@ import 'package:tooth_note/presentation/widgets/add_notes_field.dart';
 import 'package:tooth_note/presentation/widgets/bottom_save_button.dart';
 import 'package:tooth_note/utilities/colors.dart';
 
-class AddExaminationDetailsScreen extends StatefulWidget {
-  const AddExaminationDetailsScreen(
-      {super.key, this.isToEdit = false, this.index, this.text});
+class AddNewApponitmentScreen extends StatefulWidget {
+  const AddNewApponitmentScreen(
+      {super.key,
+      this.isToEdit = false,
+      this.index,
+      this.text,
+      this.attendance});
   final bool isToEdit;
   final int? index;
   final String? text;
+  final String? attendance;
   @override
-  State<AddExaminationDetailsScreen> createState() =>
-      _AddExaminationDetailsScreenState();
+  State<AddNewApponitmentScreen> createState() =>
+      _AddNewApponitmentScreenState();
 }
 
-class _AddExaminationDetailsScreenState
-    extends State<AddExaminationDetailsScreen> {
-  final TextEditingController examinationDetailsController =
-      TextEditingController();
+class _AddNewApponitmentScreenState extends State<AddNewApponitmentScreen> {
+  final TextEditingController commentsController = TextEditingController();
+  final TextEditingController appointmentController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     if (widget.isToEdit == true) {
-      examinationDetailsController.text = widget.text!;
+      commentsController.text = widget.text!;
+      log(widget.attendance.toString());
+      appointmentController.text = widget.attendance!;
     }
     super.initState();
   }
@@ -52,7 +60,7 @@ class _AddExaminationDetailsScreenState
                 color: ToothNoteColors.kWhiteColor,
               )),
           title: Text(
-            'Add Examination Details',
+            'Add New Appointment',
             style: GoogleFonts.poppins(
               textStyle: TextStyle(
                 letterSpacing: .5,
@@ -70,6 +78,14 @@ class _AddExaminationDetailsScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text('Appointment Date',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                        fontSize: size.width * 0.035,
+                        color: ToothNoteColors.kBlackColor45,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )),
                 InkWell(
                   onTap: () {
                     showPopup(context, size);
@@ -84,8 +100,7 @@ class _AddExaminationDetailsScreenState
                         borderRadius: BorderRadius.circular(5),
                         boxShadow: [
                           BoxShadow(
-                              color:
-                                  ToothNoteColors.kBlackColor.withOpacity(0.5),
+                              color: ToothNoteColors.kBlackColor.withOpacity(0.5),
                               spreadRadius: 0.01,
                               offset: const Offset(0.3, 1))
                         ]),
@@ -103,7 +118,7 @@ class _AddExaminationDetailsScreenState
                 SizedBox(
                   height: size.height * 0.03,
                 ),
-                Text('Examination Details',
+                Text('Attended',
                     style: GoogleFonts.poppins(
                       textStyle: TextStyle(
                         fontSize: size.width * 0.035,
@@ -112,9 +127,24 @@ class _AddExaminationDetailsScreenState
                       ),
                     )),
                 AddNotesTextField(
-                    controller: examinationDetailsController, maxLines: 23),
+                  controller: appointmentController,
+                  maxLines: 1,
+                  isAttended: true,
+                ),
                 SizedBox(
-                  height: size.height * 0.1,
+                  height: size.height * 0.03,
+                ),
+                Text('Comments',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                        fontSize: size.width * 0.035,
+                        color: ToothNoteColors.kBlackColor45,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )),
+                AddNotesTextField(controller: commentsController, maxLines: 5),
+                SizedBox(
+                  height: size.height * 0.3,
                 ),
               ],
             ),
@@ -122,29 +152,30 @@ class _AddExaminationDetailsScreenState
         ),
       ),
       bottomSheet: BottomWidget(
+          attendanceController: appointmentController,
           formKey: formKey,
           size: size,
           widget: widget,
-          examinationDetailsController: examinationDetailsController),
+          commentsController: commentsController),
     );
   }
 }
 
 class BottomWidget extends ConsumerWidget {
-  const BottomWidget({
-    super.key,
-    required this.formKey,
-    required this.size,
-    required this.widget,
-    required this.examinationDetailsController,
-  });
+  const BottomWidget(
+      {super.key,
+      required this.formKey,
+      required this.size,
+      required this.widget,
+      required this.commentsController,
+      required this.attendanceController});
 
   final GlobalKey<FormState> formKey;
   final Size size;
-  final AddExaminationDetailsScreen widget;
+  final AddNewApponitmentScreen widget;
 
-  final TextEditingController examinationDetailsController;
-
+  final TextEditingController commentsController;
+  final TextEditingController attendanceController;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return BlocBuilder<PatientBloc, PatientState>(
@@ -159,35 +190,37 @@ class BottomWidget extends ConsumerWidget {
             onTap: () {
               if (formKey.currentState!.validate()) {
                 if (patient != null) {
-                  List<dynamic> examinationDetailsList = [];
-                  ExaminationDetailsDTO? examinationDetailsDTO =
-                      patient.examinationDetails;
-                  if (examinationDetailsDTO != null) {
-                    examinationDetailsList =
-                        examinationDetailsDTO.examinationDetails;
+                  List<dynamic> newAppointmentList = [];
+                  NewAppointmentDTO? newAppointmentDTO = patient.newAppointment;
+                  if (newAppointmentDTO != null) {
+                    newAppointmentList = newAppointmentDTO.newAppointment;
                   }
                   if (widget.isToEdit == true) {
-                    examinationDetailsList[widget.index!] = {
-                      'value': examinationDetailsController.text,
+                    newAppointmentList[widget.index!] = {
+                      'comment': commentsController.text,
                       'date': ref.watch(dateProvider),
+                      'attended': attendanceController.text,
                     };
                   } else {
-                    examinationDetailsList.add({
-                      'value': examinationDetailsController.text,
+                    newAppointmentList.add({
+                      'comment': commentsController.text,
                       'date': ref.watch(dateProvider),
+                      'attended': attendanceController.text,
                     });
                   }
 
-                  final newExaminationDetailsDTO = ExaminationDetailsDTO(
+                  final newNewAppointmentDTO = NewAppointmentDTO(
                       patientId: patient.patientId!,
-                      examinationDetails: examinationDetailsList);
+                      newAppointment: newAppointmentList);
 
                   BlocProvider.of<PatientBloc>(context)
                       .add(PatientEvent.addPatient(
-                          patient: PatientsDetailsDTO( newAppointment: patient.newAppointment,
-                    payments: patient.payments,  dob: patient.dob,
+                          patient: PatientsDetailsDTO(
+                    payments: patient.payments,
+                    newAppointment: newNewAppointmentDTO,doctor: patient.doctor,
                     patientName: patient.patientName,
-                    patientNumber: patient.patientNumber,doctor: patient.doctor,
+                    dob: patient.dob,
+                    patientNumber: patient.patientNumber,
                     address: patient.address,
                     phoneNumber: patient.phoneNumber,
                     age: patient.age,
@@ -197,8 +230,8 @@ class BottomWidget extends ConsumerWidget {
                     diagnosis: patient.diagnosis,
                     drugAllergy: patient.drugAllergy,
                     drughistory: patient.drughistory,
+                    examinationDetails: patient.examinationDetails,
                     labInvestigation: patient.labInvestigation,
-                    examinationDetails: newExaminationDetailsDTO,
                     medicalHistory: patient.medicalHistory,
                     pastDentalHistory: patient.pastDentalHistory,
                     patientId: patient.patientId,

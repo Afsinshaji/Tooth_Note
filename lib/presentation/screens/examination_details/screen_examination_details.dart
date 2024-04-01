@@ -259,9 +259,9 @@ void showPopupMenu(
               examinationDetails: examinationDetailsList);
           BlocProvider.of<PatientBloc>(context).add(PatientEvent.addPatient(
               patient: PatientsDetailsDTO( payments: patient.payments,
-            patientName: patient.patientName,  dob: patient.dob,
+            patientName: patient.patientName,  dob: patient.dob, newAppointment: patient.newAppointment,
             patientNumber: patient.patientNumber,
-            address: patient.address,labInvestigation: patient.labInvestigation,
+            address: patient.address,labInvestigation: patient.labInvestigation,doctor: patient.doctor,
             phoneNumber: patient.phoneNumber,
             age: patient.age,
             sex: patient.sex,

@@ -11,15 +11,15 @@ part 'patient_bloc.freezed.dart';
 
 class PatientBloc extends Bloc<PatientEvent, PatientState> {
   PatientBloc() : super(const patientInitial()) {
-     on<addNewPatient>((event, emit) async {
+    on<addNewPatient>((event, emit) async {
       await PatientsImplementation.instance
           .addPatientdetails(event.patient.toModel());
-     //add(getPatientsDetails(patientId: event.patient.patientId!));
+      //add(getPatientsDetails(patientId: event.patient.patientId!));
     });
     on<addPatient>((event, emit) async {
       await PatientsImplementation.instance
           .addPatientdetails(event.patient.toModel());
-     add(getPatientsDetails(patientId: event.patient.patientId!));
+      add(getPatientsDetails(patientId: event.patient.patientId!));
     });
 
     on<addLabFiles>((event, emit) async {

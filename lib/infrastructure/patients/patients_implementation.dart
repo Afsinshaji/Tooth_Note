@@ -35,7 +35,9 @@ class PatientsImplementation extends PatientsRepository {
     final newlabModel = LabInvestigation(
         patientId: patient.patientId, labInvestigation: labFileList);
     final newPatientModel = PatientsDetails(
+      doctor: patient.doctor,
       dob: patient.dob ,
+      newAppointment: patient.newAppointment,
         patientName: patient.patientName,
         patientNumber: patient.patientNumber,
         address: patient.address,

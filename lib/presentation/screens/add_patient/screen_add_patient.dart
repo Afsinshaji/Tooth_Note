@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +33,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
   final TextEditingController patientNumController = TextEditingController();
   final TextEditingController phoneNumController = TextEditingController();
   final TextEditingController sexController = TextEditingController();
+  final TextEditingController docController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
   @override
@@ -42,6 +45,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
       sexController.text = widget.patinetEditDTO!.sex;
       patientNumController.text = widget.patinetEditDTO!.patientNumber;
       phoneNumController.text = widget.patinetEditDTO!.phoneNumber;
+      docController.text = widget.patinetEditDTO!.doctor;
     }
     super.initState();
   }
@@ -79,12 +83,13 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
           child: Column(
             children: [
               SizedBox(
-                height: size.height * 0.05,
+                height: size.height * 0.02,
               ),
               AddTextField(
                   controller: nameController,
                   isTextNumberType: false,
                   text: 'Patient Name',
+                  isToValidate: true,
                   fieldColor: ToothNoteColors.backgroundColor),
               // SizedBox(
               //   height: size.height * 0.03,
@@ -95,7 +100,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
               //     text: 'Patient Number',
               //     fieldColor: ToothNoteColors.backgroundColor),
               SizedBox(
-                height: size.height * 0.03,
+                height: size.height * 0.02,
               ),
               AddTextField(
                   controller: ageController,
@@ -103,12 +108,12 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                   text: 'Age',
                   fieldColor: ToothNoteColors.backgroundColor),
               SizedBox(
-                height: size.height * 0.03,
+                height: size.height * 0.02,
               ),
 
               InkWell(
                 onTap: () {
-                   showDOBPopup(context, size);
+                  showDOBPopup(context, size);
                 },
                 child: Container(
                   margin: EdgeInsets.only(
@@ -142,7 +147,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                 ),
               ),
               SizedBox(
-                height: size.height * 0.03,
+                height: size.height * 0.02,
               ),
               InkWell(
                 onTap: () {},
@@ -154,7 +159,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                     fieldColor: ToothNoteColors.backgroundColor),
               ),
               SizedBox(
-                height: size.height * 0.03,
+                height: size.height * 0.02,
               ),
               AddTextField(
                   controller: addressController,
@@ -162,16 +167,26 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                   text: 'Address',
                   fieldColor: ToothNoteColors.backgroundColor),
               SizedBox(
-                height: size.height * 0.03,
+                height: size.height * 0.02,
               ),
               AddTextField(
                   controller: phoneNumController,
                   isTextNumberType: true,
+                  isToValidate: true,
                   text: 'Phone Number',
                   fieldColor: ToothNoteColors.backgroundColor),
 
               SizedBox(
-                height: size.height * 0.03,
+                height: size.height * 0.02,
+              ),
+              AddTextField(
+                  controller: docController,
+                  isTextNumberType: true,
+                  text: 'Select Doctor',
+                  isDoc: true,
+                  fieldColor: ToothNoteColors.backgroundColor),
+              SizedBox(
+                height: size.height * 0.02,
               ),
               InkWell(
                 onTap: () {
@@ -210,6 +225,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
         )),
       ),
       bottomSheet: SaveButton(
+          docController: docController,
           isToEdit: widget.isToEdit,
           patientDTO:
               widget.patinetEditDTO != null ? widget.patinetEditDTO! : null,
@@ -240,7 +256,6 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
     );
   }
 
-  
   Future<void> showDOBPopup(
     BuildContext context,
     Size size,
@@ -270,6 +285,7 @@ class SaveButton extends ConsumerWidget {
       required this.sexController,
       required this.size,
       required this.isToEdit,
+      required this.docController,
       this.patientDTO});
 
   final GlobalKey<FormState> formKey;
@@ -279,6 +295,7 @@ class SaveButton extends ConsumerWidget {
   final TextEditingController phoneNumController;
   final TextEditingController ageController;
   final TextEditingController sexController;
+  final TextEditingController docController;
   final Size size;
   final bool isToEdit;
   final PatientsDetailsDTO? patientDTO;
@@ -296,7 +313,8 @@ class SaveButton extends ConsumerWidget {
               BlocProvider.of<PatientBloc>(context).add(
                   PatientEvent.addNewPatient(
                       patient: PatientsDetailsDTO(
-
+                          newAppointment:
+                              !isToEdit ? null : patientDTO!.newAppointment,
                           chiefComplaints:
                               !isToEdit ? null : patientDTO!.chiefComplaints,
                           payments: !isToEdit ? null : patientDTO!.payments,
@@ -325,9 +343,15 @@ class SaveButton extends ConsumerWidget {
                               : 'DDC 000${patientList.length + 1}',
                           address: addressController.text,
                           phoneNumber: phoneNumController.text,
-                          age: double.parse(ageController.text),
+                          age: double.parse(ageController.text.isEmpty
+                              ? '0.0'
+                              : ageController.text),
                           sex: sexController.text,
-                          dob: ref.watch(dateOfBirthProvider).toString(),
+                          doctor: docController.text,
+                          dob: ref.watch(dateOfBirthProvider).year ==
+                                  DateTime.now().year
+                              ? ''
+                              : ref.watch(dateOfBirthProvider).toString(),
                           date: ref.watch(dateProvider).toString())));
 
               BlocProvider.of<AllPatientsBloc>(context)
@@ -419,8 +443,6 @@ class TimeWidget extends ConsumerWidget {
   }
 }
 
-
-
 class DOBTimeWidget extends ConsumerWidget {
   const DOBTimeWidget({
     super.key,
@@ -429,9 +451,12 @@ class DOBTimeWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     DateTime dateTime = ref.watch(dateOfBirthProvider);
+    log('${dateTime.toString()}kk${DateTime.now()}');
 
     return Text(
-      '${dateTime.day} ${ToothList.monthNames[dateTime.month - 1]} ${dateTime.year}',
+      dateTime.year == DateTime.now().year
+          ? 'Nil'
+          : '${dateTime.day} ${ToothList.monthNames[dateTime.month - 1]} ${dateTime.year}',
       style: const TextStyle(fontWeight: FontWeight.w500),
     );
   }

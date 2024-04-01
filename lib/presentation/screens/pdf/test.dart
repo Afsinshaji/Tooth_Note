@@ -165,6 +165,28 @@ Future<Uint8List> previewPdf(
     );
   }
 
+  int calculateAge(DateTime dob) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - dob.year;
+    int month1 = currentDate.month;
+    int month2 = dob.month;
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = dob.day;
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    return age;
+  }
+
+  DateTime? dob;
+  if (patient.dob.isNotEmpty) {
+    dob = DateTime.parse(patient.dob);
+  }
+
   pdf.addPage(pw.Page(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
@@ -208,16 +230,34 @@ Future<Uint8List> previewPdf(
                       fullHeight, 'Patient Number', patient.patientNumber),
                   pw.SizedBox(height: fullHeight * 0.007),
                   patientDetailsColumn(
-                      fullHeight, 'Age', patient.age.toString()),
+                      fullHeight, 'Doctor', patient.doctor.toString()),
+                  pw.SizedBox(height: fullHeight * 0.007),
+                  patientDetailsColumn(
+                      fullHeight,
+                      'Age',
+                      patient.age == 0.0 && dob != null
+                          ? calculateAge(dob).toString()
+                          : patient.age == 0.0
+                              ? 'Nil'
+                              : patient.age.toString()),
                   pw.SizedBox(height: fullHeight * 0.007),
                   patientDetailsColumn(fullHeight, 'Sex', patient.sex),
                   pw.SizedBox(height: fullHeight * 0.007),
+                  patientDetailsColumn(
+                      fullHeight,
+                      'Date Of Birth',
+                      patient.dob.isEmpty
+                          ? 'Nil'
+                          : '${DateTime.parse(patient.dob).day}-${DateTime.parse(patient.dob).month}-${DateTime.parse(patient.dob).year}'),
+                  pw.SizedBox(height: fullHeight * 0.01),
                   patientDetailsColumn(fullHeight, 'Address', patient.address),
                   pw.SizedBox(height: fullHeight * 0.007),
                   patientDetailsColumn(
                       fullHeight, 'Phone Number', patient.phoneNumber),
                   pw.SizedBox(height: fullHeight * 0.007),
-                  patientDetailsColumn(fullHeight, 'Date Added', patient.date),
+
+                  patientDetailsColumn(fullHeight, 'Date Added',
+                      '${DateTime.parse(patient.date).day}-${DateTime.parse(patient.date).month}-${DateTime.parse(patient.date).year}'),
                   pw.SizedBox(height: fullHeight * 0.01),
                   patient.chiefComplaints != null
                       ? eachSegmentDetails('Chief Complaints',

@@ -6,22 +6,26 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tooth_note/utilities/colors.dart';
 
 class AddTextField extends StatelessWidget {
-  const AddTextField(
-      {super.key,
-      required this.controller,
-      required this.isTextNumberType,
-      required this.text,
-      required this.fieldColor,
-      this.prefix,
-      this.fontSize,
-      this.isSex = false});
+  const AddTextField({
+    super.key,
+    required this.controller,
+    required this.isTextNumberType,
+    required this.text,
+    required this.fieldColor,
+    this.prefix,
+    this.fontSize,
+    this.isSex = false,
+    this.isDoc = false,
+    this.isToValidate=false,
+  });
 
   final TextEditingController controller;
   final bool isTextNumberType;
 
   final String text;
   final bool isSex;
-
+  final bool isDoc;
+  final bool isToValidate;
   final Color fieldColor;
   final Widget? prefix;
   final double? fontSize;
@@ -39,7 +43,7 @@ class AddTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         child: TextFormField(
           onTap: () {
-            if (isSex) {
+            if (isSex || isDoc) {
               log('ok');
               showDialog(
                 context: context,
@@ -60,7 +64,7 @@ class AddTextField extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'SEX',
+                              isDoc ? 'Select Doctor' : 'SEX',
                               style: GoogleFonts.poppins(
                                 textStyle: TextStyle(
                                   fontSize: size.width * 0.05,
@@ -71,7 +75,8 @@ class AddTextField extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: () {
-                                controller.text = 'MALE';
+                                controller.text =
+                                    isDoc ? 'Dr.Jinish S Manjaly' : 'MALE';
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -84,7 +89,7 @@ class AddTextField extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'MALE',
+                                      isDoc ? ' Dr.Jinish S Manjaly ' : 'MALE',
                                       style: GoogleFonts.poppins(
                                         textStyle: TextStyle(
                                           fontSize: size.width * 0.05,
@@ -100,7 +105,8 @@ class AddTextField extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: () {
-                                controller.text = 'FEMALE';
+                                controller.text =
+                                    isDoc ? 'Dr.Livina Jinish' : 'FEMALE';
                                 Navigator.pop(context);
                               },
                               child: Container(
@@ -113,7 +119,7 @@ class AddTextField extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'FEMALE',
+                                      isDoc ? 'Dr.Livina Jinish' : 'FEMALE',
                                       style: GoogleFonts.poppins(
                                         textStyle: TextStyle(
                                           fontSize: size.width * 0.05,
@@ -134,8 +140,8 @@ class AddTextField extends StatelessWidget {
               );
             }
           },
-          showCursor: isSex ? false : true,
-          readOnly: isSex ? true : false,
+          showCursor: isSex || isDoc ? false : true,
+          readOnly: isSex || isDoc ? true : false,
           onChanged: (value) {},
           controller: controller,
           enableSuggestions: !isTextNumberType,
@@ -166,17 +172,17 @@ class AddTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5.0),
                 borderSide: const BorderSide(width: 0, style: BorderStyle.none),
               )),
-          keyboardType: isSex
+          keyboardType: isSex || isDoc
               ? TextInputType.none
               : isTextNumberType
                   ? TextInputType.number
                   : TextInputType.emailAddress,
           validator: (text) {
-            if (!isTextNumberType) {
-              if (text == null || text.isEmpty) {
-                return "Can't be Empty";
-              }
-            }
+            // if (!isTextNumberType) {
+       if(isToValidate)  {   if (text == null || text.isEmpty) {
+              return "Can't be Empty";
+            }}
+            // }
 
             // if (isTextNumberType && text.length < 10) {
             //   return 'Enter a valid number';

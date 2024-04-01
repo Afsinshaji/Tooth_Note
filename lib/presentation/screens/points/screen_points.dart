@@ -238,10 +238,10 @@ void showPopupMenu(
               PointsDTO(patientId: patient.patientId!, points: pointsList);
           BlocProvider.of<PatientBloc>(context).add(PatientEvent.addPatient(
               patient: PatientsDetailsDTO(   payments: patient.payments,
-            patientName: patient.patientName,
+            patientName: patient.patientName, newAppointment: patient.newAppointment,
             patientNumber: patient.patientNumber,  dob: patient.dob,
             address: patient.address,
-            phoneNumber: patient.phoneNumber,
+            phoneNumber: patient.phoneNumber,doctor: patient.doctor,
             age: patient.age,
             sex: patient.sex,
             date: patient.date,

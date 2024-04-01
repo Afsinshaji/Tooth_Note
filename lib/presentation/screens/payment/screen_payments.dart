@@ -90,9 +90,9 @@ class PaymentsScreen extends ConsumerWidget {
                     for (var pay in patientDTO!.payments!.payments) {
                       if (pay['isInstallment'] == true) {
                         totalInstallment =
-                            totalInstallment + double.parse(pay['amount']);
+                            totalInstallment + double.parse(pay['amount'].isEmpty?'0.0':pay['amount']);
                       } else {
-                        totalfee = totalfee + double.parse(pay['amount']);
+                        totalfee = totalfee + double.parse(pay['amount'].isEmpty?'0.0':pay['amount']);
                       }
                     }
                     due = totalfee - totalInstallment;
@@ -400,8 +400,8 @@ void showPopupMenu(
               patientId: patient.patientId!, payments: paymentsList);
           BlocProvider.of<PatientBloc>(context).add(PatientEvent.addPatient(
               patient: PatientsDetailsDTO(
-            payments: newPaymentsDTO,
-            patientName: patient.patientName,
+            payments: newPaymentsDTO, newAppointment: patient.newAppointment,
+            patientName: patient.patientName,doctor: patient.doctor,
             dob: patient.dob,
             patientNumber: patient.patientNumber,
             address: patient.address,

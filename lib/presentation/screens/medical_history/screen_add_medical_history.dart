@@ -168,9 +168,9 @@ class BottomWidget extends ConsumerWidget {
 
                   BlocProvider.of<PatientBloc>(context)
                       .add(PatientEvent.addPatient(
-                          patient: PatientsDetailsDTO(   payments: patient.payments,
+                          patient: PatientsDetailsDTO(   payments: patient.payments, newAppointment: patient.newAppointment,
                     patientName: patient.patientName,  dob: patient.dob,
-                    patientNumber: patient.patientNumber,
+                    patientNumber: patient.patientNumber,doctor: patient.doctor,
                     address: patient.address,
                     phoneNumber: patient.phoneNumber,
                     age: patient.age,

@@ -251,8 +251,8 @@ void showPopupMenu(
               pastDentalHistory: dentalHistoryList);
           BlocProvider.of<PatientBloc>(context).add(PatientEvent.addPatient(
               patient: PatientsDetailsDTO( payments: patient.payments,labInvestigation: patient.labInvestigation,
-            patientName: patient.patientName,  dob: patient.dob,
-            patientNumber: patient.patientNumber,
+            patientName: patient.patientName,  dob: patient.dob, newAppointment: patient.newAppointment,
+            patientNumber: patient.patientNumber,doctor: patient.doctor,
             address: patient.address,
             phoneNumber: patient.phoneNumber,
             age: patient.age,

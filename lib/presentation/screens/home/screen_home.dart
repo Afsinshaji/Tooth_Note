@@ -151,7 +151,7 @@ class PatientListSection extends ConsumerWidget {
         bool isLoading = true;
 
         if (allPatientState is displayallPatient) {
-          patientsList = allPatientState.patient;
+          patientsList = allPatientState.patient.reversed.toList();
           isLoading = false;
         }
         if (search.isNotEmpty) {
@@ -185,8 +185,13 @@ class PatientListSection extends ConsumerWidget {
                     ),
                   )
                 : ListView.separated(
-                    itemCount: isLoading ? 10 : patientsList.length,
+                    itemCount: isLoading ? 10 : patientsList.length + 1,
                     itemBuilder: (context, index) {
+                      if (index == patientsList.length) {
+                        return SizedBox(
+                          height: size.height * 0.1,
+                        );
+                      }
                       return Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: size.width * 0.01),
@@ -405,16 +410,20 @@ class SearchContainer extends ConsumerWidget {
               // )
               focusedBorder: UnderlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: ToothNoteColors.kWhiteColor)),
+                  borderSide:
+                      const BorderSide(color: ToothNoteColors.kWhiteColor)),
               enabledBorder: UnderlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: ToothNoteColors.kWhiteColor)),
+                  borderSide:
+                      const BorderSide(color: ToothNoteColors.kWhiteColor)),
               errorBorder: UnderlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: ToothNoteColors.kWhiteColor)),
+                  borderSide:
+                      const BorderSide(color: ToothNoteColors.kWhiteColor)),
               border: UnderlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  borderSide: const BorderSide(color: ToothNoteColors.kWhiteColor))),
+                  borderSide:
+                      const BorderSide(color: ToothNoteColors.kWhiteColor))),
         ),
       ),
     );

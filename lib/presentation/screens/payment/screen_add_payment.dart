@@ -85,6 +85,16 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
               //         fontWeight: FontWeight.w400,
               //       ),
               //     )),
+
+                 AddTextField(
+                  controller: amountController,
+                  isTextNumberType: true,
+                  isToValidate: true,
+                  text: 'Amount',
+                  fieldColor: ToothNoteColors.backgroundColor),
+                   SizedBox(
+                height: size.height * 0.05,
+              ),
        widget.isInstallmet?const SizedBox():       AddTextField(
                   controller: amountNameController,
                   isTextNumberType: false,
@@ -93,14 +103,8 @@ class _AddPaymentScreenState extends State<AddPaymentScreen> {
            widget.isInstallmet?const SizedBox():   SizedBox(
                 height: size.height * 0.05,
               ),
-              AddTextField(
-                  controller: amountController,
-                  isTextNumberType: true,
-                  text: 'Amount',
-                  fieldColor: ToothNoteColors.backgroundColor),
-              SizedBox(
-                height: size.height * 0.05,
-              ),
+           
+             
               InkWell(
                 onTap: () {
                   showPopup(context, size);
@@ -243,10 +247,10 @@ class BottomWidget extends ConsumerWidget {
                   BlocProvider.of<PatientBloc>(context)
                       .add(PatientEvent.addPatient(
                           patient: PatientsDetailsDTO(
-                    patientName: patient.patientName,
+                    patientName: patient.patientName, newAppointment: patient.newAppointment,
                     patientNumber: patient.patientNumber,
                     dob: patient.dob,
-                    address: patient.address,
+                    address: patient.address,doctor: patient.doctor,
                     phoneNumber: patient.phoneNumber,
                     age: patient.age,
                     sex: patient.sex,

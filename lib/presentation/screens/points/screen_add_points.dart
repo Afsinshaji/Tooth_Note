@@ -109,10 +109,10 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
 
                     BlocProvider.of<PatientBloc>(context)
                         .add(PatientEvent.addPatient(
-                            patient: PatientsDetailsDTO(   payments: patient.payments,
+                            patient: PatientsDetailsDTO(   payments: patient.payments, newAppointment: patient.newAppointment,
                       patientName: patient.patientName,
                       patientNumber: patient.patientNumber,  dob: patient.dob,
-                      address: patient.address,
+                      address: patient.address,doctor: patient.doctor,
                       phoneNumber: patient.phoneNumber,
                       age: patient.age,
                       sex: patient.sex,

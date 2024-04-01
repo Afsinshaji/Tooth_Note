@@ -5,6 +5,7 @@ import 'package:tooth_note/domain/models/drug_history/drug_history.dart';
 import 'package:tooth_note/domain/models/examination_details/examination_details.dart';
 import 'package:tooth_note/domain/models/lab_investigation/lab_investigation.dart';
 import 'package:tooth_note/domain/models/medical_history.dart/medical_history.dart';
+import 'package:tooth_note/domain/models/new_appointment/new_appointment.dart';
 import 'package:tooth_note/domain/models/past_dental_history/past_dental_history.dart';
 import 'package:tooth_note/domain/models/payments/payments.dart';
 import 'package:tooth_note/domain/models/points/points.dart';
@@ -15,6 +16,7 @@ class PatientsDetails {
   final String patientName;
   final String patientNumber;
   final String address;
+  final String doctor;
   final String phoneNumber;
   final double age;
   final String sex;
@@ -33,6 +35,7 @@ class PatientsDetails {
   final Points? points;
   final LabInvestigation? labInvestigation;
   final Payments? payments;
+  final NewAppointment? newAppointment;
 
   PatientsDetails(
       {required this.patientName,
@@ -40,10 +43,12 @@ class PatientsDetails {
       required this.address,
       required this.phoneNumber,
       required this.age,
+      required this.doctor,
       required this.sex,
       required this.patientId,
       required this.date,
       required this.dob,
+      this.newAppointment,
       this.payments,
       this.medicalHistory,
       this.chiefComplaints,
@@ -59,6 +64,7 @@ class PatientsDetails {
 
   Map<String, dynamic> toMap() {
     return {
+      'doctor':doctor,
       'dob': dob,
       'patientName': patientName,
       'patientNumber': patientNumber,
@@ -68,6 +74,8 @@ class PatientsDetails {
       'sex': sex,
       'patientId': patientId,
       'date': date,
+      'newAppointment':
+          newAppointment == null ? null : newAppointment!.newAppointment,
       'payments': payments == null ? null : payments!.payments,
       'medicalHistory':
           medicalHistory == null ? null : medicalHistory!.medicalHistory,
@@ -95,6 +103,7 @@ class PatientsDetails {
 
   static PatientsDetails fromMap(Map<String, dynamic> patient) {
     return PatientsDetails(
+      doctor: patient['doctor']??'',
       dob: patient['dob'] ?? '',
       patientName: patient['patientName'],
       patientNumber: patient['patientNumber'],
@@ -104,6 +113,9 @@ class PatientsDetails {
       sex: patient['sex'],
       patientId: patient['patientId'],
       date: patient['date'],
+      newAppointment: NewAppointment(
+          patientId: patient['patientId'],
+          newAppointment: patient['newAppointment'] ?? []),
       payments: Payments(
           patientId: patient['patientId'], payments: patient['payments'] ?? []),
       medicalHistory: MedicalHistory(

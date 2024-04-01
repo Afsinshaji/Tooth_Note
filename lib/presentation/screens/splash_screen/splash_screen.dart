@@ -23,7 +23,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
       changeOPacity();
     });
 
-    Timer(const Duration(seconds: 2), () {
+    Timer(const Duration(milliseconds: 800), () {
       navigateUser();
     });
     super.initState();
@@ -64,7 +64,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
       body: SafeArea(
         child: AnimatedOpacity(
           opacity: ref.watch(opacityProvider),
-          duration: const Duration(seconds: 3),
+          duration: const Duration(milliseconds: 800),
           child: Center(
             child: Image.asset(
                 'assets/images/WhatsApp_Image_2024-03-15_at_20.36.01-removebg-preview.png'),

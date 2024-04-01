@@ -202,11 +202,11 @@ class ViewScreen extends StatelessWidget {
   const ViewScreen({
     super.key,
     required this.data,
-    required this.onTap,
+    required this.onTap,this.title= 'View',
   });
   final String data;
   final void Function() onTap;
-
+  final String title;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -215,7 +215,7 @@ class ViewScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: ToothNoteColors.backgroundColor,
         title: Text(
-          'View',
+          title,
           style: GoogleFonts.poppins(
             textStyle: TextStyle(
               letterSpacing: .5,
@@ -338,9 +338,11 @@ void showPopupMenu(
               treatmentPlanning: treatmentPlanningList);
           BlocProvider.of<PatientBloc>(context).add(PatientEvent.addPatient(
               patient: PatientsDetailsDTO(
+            newAppointment: patient.newAppointment,
             payments: patient.payments,
-            patientName: patient.patientName,
-            patientNumber: patient.patientNumber,  dob: patient.dob,
+            patientName: patient.patientName,doctor: patient.doctor,
+            patientNumber: patient.patientNumber,
+            dob: patient.dob,
             address: patient.address,
             phoneNumber: patient.phoneNumber,
             age: patient.age,

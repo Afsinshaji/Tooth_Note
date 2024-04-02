@@ -103,7 +103,7 @@ class _DrugAllergyScreenState extends State<DrugAllergyScreen> {
                       patientName: patient.patientName,  dob: patient.dob,
                       patientNumber: patient.patientNumber, newAppointment: patient.newAppointment,
                       address: patient.address,doctor: patient.doctor,
-                      phoneNumber: patient.phoneNumber,
+                      phoneNumber: patient.phoneNumber, medicine: patient.medicine,
                       age: patient.age,
                       sex: patient.sex,
                       date: patient.date,

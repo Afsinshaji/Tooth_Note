@@ -263,7 +263,7 @@ void showPopupMenu(
             payments: patient.payments,
             newAppointment: newNewAppointmentDTO,doctor: patient.doctor,
             patientName: patient.patientName,
-            patientNumber: patient.patientNumber,
+            patientNumber: patient.patientNumber, medicine: patient.medicine,
             dob: patient.dob,
             address: patient.address,
             phoneNumber: patient.phoneNumber,

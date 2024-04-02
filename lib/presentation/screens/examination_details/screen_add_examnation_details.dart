@@ -187,7 +187,7 @@ class BottomWidget extends ConsumerWidget {
                           patient: PatientsDetailsDTO( newAppointment: patient.newAppointment,
                     payments: patient.payments,  dob: patient.dob,
                     patientName: patient.patientName,
-                    patientNumber: patient.patientNumber,doctor: patient.doctor,
+                    patientNumber: patient.patientNumber,doctor: patient.doctor, medicine: patient.medicine,
                     address: patient.address,
                     phoneNumber: patient.phoneNumber,
                     age: patient.age,

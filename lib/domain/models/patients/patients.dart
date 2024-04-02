@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:tooth_note/domain/models/chief_complaints/chief_complaints.dart';
 import 'package:tooth_note/domain/models/diagnosis/diagnosis.dart';
 import 'package:tooth_note/domain/models/drug_allergy/drug_allergy.dart';
@@ -5,6 +7,7 @@ import 'package:tooth_note/domain/models/drug_history/drug_history.dart';
 import 'package:tooth_note/domain/models/examination_details/examination_details.dart';
 import 'package:tooth_note/domain/models/lab_investigation/lab_investigation.dart';
 import 'package:tooth_note/domain/models/medical_history.dart/medical_history.dart';
+import 'package:tooth_note/domain/models/medicine/medicine.dart';
 import 'package:tooth_note/domain/models/new_appointment/new_appointment.dart';
 import 'package:tooth_note/domain/models/past_dental_history/past_dental_history.dart';
 import 'package:tooth_note/domain/models/payments/payments.dart';
@@ -36,6 +39,7 @@ class PatientsDetails {
   final LabInvestigation? labInvestigation;
   final Payments? payments;
   final NewAppointment? newAppointment;
+  final Medicine? medicine;
 
   PatientsDetails(
       {required this.patientName,
@@ -48,6 +52,7 @@ class PatientsDetails {
       required this.patientId,
       required this.date,
       required this.dob,
+      this.medicine,
       this.newAppointment,
       this.payments,
       this.medicalHistory,
@@ -64,7 +69,7 @@ class PatientsDetails {
 
   Map<String, dynamic> toMap() {
     return {
-      'doctor':doctor,
+      'doctor': doctor,
       'dob': dob,
       'patientName': patientName,
       'patientNumber': patientNumber,
@@ -74,6 +79,7 @@ class PatientsDetails {
       'sex': sex,
       'patientId': patientId,
       'date': date,
+      'medicine': medicine == null ? null : medicine!.medicine,
       'newAppointment':
           newAppointment == null ? null : newAppointment!.newAppointment,
       'payments': payments == null ? null : payments!.payments,
@@ -102,8 +108,10 @@ class PatientsDetails {
   }
 
   static PatientsDetails fromMap(Map<String, dynamic> patient) {
+    log(patient.toString());
+
     return PatientsDetails(
-      doctor: patient['doctor']??'',
+      doctor: patient['doctor'] ?? '',
       dob: patient['dob'] ?? '',
       patientName: patient['patientName'],
       patientNumber: patient['patientNumber'],
@@ -113,6 +121,8 @@ class PatientsDetails {
       sex: patient['sex'],
       patientId: patient['patientId'],
       date: patient['date'],
+      medicine: Medicine(
+          patientId: patient['patientId'], medicine: patient['medicine'] ?? ''),
       newAppointment: NewAppointment(
           patientId: patient['patientId'],
           newAppointment: patient['newAppointment'] ?? []),

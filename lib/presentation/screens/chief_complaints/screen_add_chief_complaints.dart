@@ -174,6 +174,7 @@ class BottomSheetButton extends ConsumerWidget {
                   BlocProvider.of<PatientBloc>(context)
                       .add(PatientEvent.addPatient(
                           patient: PatientsDetailsDTO( 
+                            medicine: patient.medicine,
                              newAppointment: patient.newAppointment,
                             payments: patient.payments,
                     patientName: patient.patientName,  dob: patient.dob,doctor: patient.doctor,

@@ -16,6 +16,7 @@ import 'package:tooth_note/presentation/screens/drug_history/screen_drug_history
 import 'package:tooth_note/presentation/screens/examination_details/screen_examination_details.dart';
 import 'package:tooth_note/presentation/screens/lab_investigation/screen_lab_investigation.dart';
 import 'package:tooth_note/presentation/screens/medical_history/screen_medical_history.dart';
+import 'package:tooth_note/presentation/screens/medicine/screen_medicine.dart';
 import 'package:tooth_note/presentation/screens/message/screen_message.dart';
 import 'package:tooth_note/presentation/screens/new_appointment/screen_new_appointment.dart';
 import 'package:tooth_note/presentation/screens/payment/screen_add_payment.dart';
@@ -319,6 +320,9 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.chiefComplaints != null &&
+                              patientDTO!
+                                  .chiefComplaints!.chiefComplaints.isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -335,6 +339,9 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.medicalHistory != null &&
+                              patientDTO!
+                                  .medicalHistory!.medicalHistory.isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -351,6 +358,9 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.pastDentalHistory != null &&
+                              patientDTO!.pastDentalHistory!.pastDentalHistory
+                                  .isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -367,6 +377,8 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.drugAllergy != null &&
+                              patientDTO!.drugAllergy!.drugAllergy.isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             String allergy = '';
@@ -387,6 +399,8 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.drughistory != null &&
+                              patientDTO!.drughistory!.drugHistory.isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -403,6 +417,9 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.examinationDetails != null &&
+                              patientDTO!.examinationDetails!.examinationDetails
+                                  .isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -419,6 +436,9 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.labInvestigation != null &&
+                              patientDTO!.labInvestigation!.labInvestigation
+                                  .isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -435,6 +455,8 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.diagnosis != null &&
+                              patientDTO!.diagnosis!.diagnosis.isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             String diagnosis = '';
@@ -455,6 +477,9 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.treatmentPlanning != null &&
+                              patientDTO!.treatmentPlanning!.treatmentPlanning
+                                  .isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -471,6 +496,9 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.treatmentDetails != null &&
+                              patientDTO!.treatmentDetails!.treatmentDetails
+                                  .isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             String treatment = '';
@@ -492,21 +520,31 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.medicine != null &&
+                              patientDTO!.medicine!.medicine.isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
+                            String medicine = '';
+                            if (patientDTO!.medicine != null) {
+                              medicine = patientDTO!.medicine!.medicine;
+                            }
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => const PaymentsScreen(),
+                                  builder: (context) =>
+                                      MedicineScreen(text: medicine),
                                 ));
                           },
-                          prefixIcon: Icons.currency_rupee,
-                          subtitle: 'Add Payments & due',
-                          title: 'Payments'),
+                          prefixIcon: Icons.medication,
+                          subtitle: 'Add Medicine Details',
+                          title: 'Medicine'),
                       SizedBox(
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.newAppointment != null &&
+                              patientDTO!
+                                  .newAppointment!.newAppointment.isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -523,6 +561,25 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.payments != null &&
+                              patientDTO!.payments!.payments.isNotEmpty,
+                          onTap: () {
+                            initializeDate(ref);
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => const PaymentsScreen(),
+                                ));
+                          },
+                          prefixIcon: Icons.currency_rupee,
+                          subtitle: 'Add Payments & due',
+                          title: 'Payments'),
+                      SizedBox(
+                        height: size.height * 0.025,
+                      ),
+                      Detailscontainer(
+                          isChecked: patientDTO!.points != null &&
+                              patientDTO!.points!.points.isNotEmpty,
                           onTap: () {
                             initializeDate(ref);
                             Navigator.push(
@@ -576,8 +633,11 @@ class EditButton extends ConsumerWidget {
     return IconButton(
         onPressed: () {
           addTime(DateTime.parse(patientDTO!.date), ref);
-          addDOB(DateTime.parse(patientDTO!.dob.isEmpty?DateTime.now().toString()
-          :patientDTO!.dob), ref);
+          addDOB(
+              DateTime.parse(patientDTO!.dob.isEmpty
+                  ? DateTime.now().toString()
+                  : patientDTO!.dob),
+              ref);
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -597,11 +657,13 @@ class Detailscontainer extends StatelessWidget {
       required this.prefixIcon,
       required this.title,
       required this.subtitle,
-      this.onTap});
+      this.onTap,
+      required this.isChecked});
   final IconData prefixIcon;
   final String title;
   final String subtitle;
   final Function()? onTap;
+  final bool isChecked;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -660,8 +722,20 @@ class Detailscontainer extends StatelessWidget {
                         ],
                       ),
                     ),
+                    // SizedBox(
+                    //   width: size.width * 0.02,
+                    // ),
+                    isChecked
+                        ? Icon(
+                            Icons.check_box,
+                            color: ToothNoteColors.kGreenColor,
+                            size: size.width * 0.09,
+                          )
+                        : SizedBox(
+                            width: size.width * 0.06,
+                          ),
                     SizedBox(
-                      width: size.width * 0.1,
+                      width: size.width * 0.04,
                     ),
                     Icon(
                       Icons.arrow_forward_ios,

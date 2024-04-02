@@ -256,7 +256,7 @@ void showPopupMenu(
               patientId: patient.patientId!,
               chiefComplaints: chiefComplaintsList);
           BlocProvider.of<PatientBloc>(context).add(PatientEvent.addPatient(
-              patient: PatientsDetailsDTO( 
+              patient: PatientsDetailsDTO(  medicine: patient.medicine,
                  newAppointment: patient.newAppointment,
                 payments: patient.payments,
               dob: patient.dob,doctor: patient.doctor,

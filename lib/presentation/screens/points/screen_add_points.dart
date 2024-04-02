@@ -111,7 +111,7 @@ class _AddPointsScreenState extends State<AddPointsScreen> {
                         .add(PatientEvent.addPatient(
                             patient: PatientsDetailsDTO(   payments: patient.payments, newAppointment: patient.newAppointment,
                       patientName: patient.patientName,
-                      patientNumber: patient.patientNumber,  dob: patient.dob,
+                      patientNumber: patient.patientNumber,  dob: patient.dob, medicine: patient.medicine,
                       address: patient.address,doctor: patient.doctor,
                       phoneNumber: patient.phoneNumber,
                       age: patient.age,

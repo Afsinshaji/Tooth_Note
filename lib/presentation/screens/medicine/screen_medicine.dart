@@ -3,32 +3,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tooth_note/application/all_patients/all_patients_bloc.dart';
 import 'package:tooth_note/application/patient/patient_bloc.dart';
-import 'package:tooth_note/application/view_dto/diagnosis/diagnosis.dart';
+import 'package:tooth_note/application/view_dto/medicine/medicine.dart';
 import 'package:tooth_note/application/view_dto/patients/patients.dart';
 import 'package:tooth_note/presentation/widgets/add_notes_field.dart';
 import 'package:tooth_note/presentation/widgets/bottom_save_button.dart';
 import 'package:tooth_note/utilities/colors.dart';
 
-class DiagnosisScreen extends StatefulWidget {
-  const DiagnosisScreen({super.key, required this.text});
-
+class MedicineScreen extends StatefulWidget {
+  const MedicineScreen(
+      {super.key,required this.text});
+ 
+ 
   final String text;
   @override
-  State<DiagnosisScreen> createState() => _DiagnosisScreenState();
+  State<MedicineScreen> createState() =>
+      _MedicineScreenState();
 }
 
-class _DiagnosisScreenState extends State<DiagnosisScreen> {
-  final TextEditingController diagnosisController = TextEditingController();
+class _MedicineScreenState extends State<MedicineScreen> {
+  final TextEditingController medicineController =
+      TextEditingController();
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    diagnosisController.text = widget.text;
-
+    
+      medicineController.text = widget.text;
+  
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
+ 
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +47,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
                 color: ToothNoteColors.kWhiteColor,
               )),
           title: Text(
-            'Diagnosis',
+            'Medicine',
             style: GoogleFonts.poppins(
               textStyle: TextStyle(
                 letterSpacing: .5,
@@ -59,7 +64,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Diagnosis',
+              Text('Medicine',
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
                       fontSize: size.width * 0.035,
@@ -67,7 +72,8 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
                       fontWeight: FontWeight.w400,
                     ),
                   )),
-              AddNotesTextField(controller: diagnosisController, maxLines: 5),
+              AddNotesTextField(
+                  controller: medicineController, maxLines: 5),
             ],
           ),
         ),
@@ -84,26 +90,29 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
               onTap: () {
                 if (formKey.currentState!.validate()) {
                   if (patient != null) {
-                    final newDiagnosisDTO = DiagnosisDTO(
+                    
+                  
+
+                    final newMedicineDTO = MedicineDTO(
                         patientId: patient.patientId!,
-                        diagnosis: diagnosisController.text);
+                        medicine: medicineController.text);
 
                     BlocProvider.of<PatientBloc>(context)
                         .add(PatientEvent.addPatient(
-                            patient: PatientsDetailsDTO( payments: patient.payments,
-                      patientName: patient.patientName,  dob: patient.dob, newAppointment: patient.newAppointment,
-                      patientNumber: patient.patientNumber,doctor: patient.doctor,
-                      address: patient.address, medicine: patient.medicine,
-                      phoneNumber: patient.phoneNumber,
+                            patient: PatientsDetailsDTO(   payments: patient.payments, newAppointment: patient.newAppointment,
+                      patientName: patient.patientName, medicine: newMedicineDTO,
+                      patientNumber: patient.patientNumber,  dob: patient.dob,
+                      address: patient.address,
+                      phoneNumber: patient.phoneNumber,doctor: patient.doctor,
                       age: patient.age,
-                      sex: patient.sex,
+                      sex: patient.sex, labInvestigation: patient.labInvestigation,
                       date: patient.date,
-                      chiefComplaints: patient.chiefComplaints, labInvestigation: patient.labInvestigation,
-                      diagnosis: newDiagnosisDTO,
+                      chiefComplaints: patient.chiefComplaints,
+                      diagnosis: patient.diagnosis,
                       drugAllergy: patient.drugAllergy,
                       drughistory: patient.drughistory,
                       examinationDetails: patient.examinationDetails,
-                      medicalHistory: patient.medicalHistory,
+                      medicalHistory:patient.medicalHistory,
                       pastDentalHistory: patient.pastDentalHistory,
                       patientId: patient.patientId,
                       points: patient.points,

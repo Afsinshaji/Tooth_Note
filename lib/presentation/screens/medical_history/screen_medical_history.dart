@@ -255,7 +255,7 @@ void showPopupMenu(
               patient: PatientsDetailsDTO( payments: patient.payments, newAppointment: patient.newAppointment,
             patientName: patient.patientName,
             patientNumber: patient.patientNumber,  dob: patient.dob,doctor: patient.doctor,
-            address: patient.address,
+            address: patient.address, medicine: patient.medicine,
             phoneNumber: patient.phoneNumber,
             age: patient.age,
             sex: patient.sex,

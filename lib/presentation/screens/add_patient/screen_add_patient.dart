@@ -313,6 +313,8 @@ class SaveButton extends ConsumerWidget {
               BlocProvider.of<PatientBloc>(context).add(
                   PatientEvent.addNewPatient(
                       patient: PatientsDetailsDTO(
+                         medicine:
+                              !isToEdit ? null : patientDTO!.medicine,
                           newAppointment:
                               !isToEdit ? null : patientDTO!.newAppointment,
                           chiefComplaints:

@@ -6,6 +6,7 @@ import 'package:tooth_note/application/all_patients/all_patients_bloc.dart';
 import 'package:tooth_note/application/patient/patient_bloc.dart';
 import 'package:tooth_note/application/view_dto/patients/patients.dart';
 import 'package:tooth_note/presentation/screens/add_patient/screen_add_patient.dart';
+import 'package:tooth_note/presentation/screens/home/widgets/sorting_bottom_sheet.dart';
 import 'package:tooth_note/presentation/screens/login/screen_login.dart';
 import 'package:tooth_note/presentation/screens/view_patient/screen_view_patient.dart';
 import 'package:tooth_note/presentation/view_states/add_patient/riverpod_add_patient.dart';
@@ -38,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       linearGradient: shimmerGradient,
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: size * 0.2,
+          preferredSize: size * 0.17,
           child: Column(
             children: [
               AppBar(
@@ -145,6 +146,7 @@ class PatientListSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String search = ref.watch(homeSearchProvider);
+    final sortDate = ref.watch(homeSortDateProvider);
     return SafeArea(child: BlocBuilder<AllPatientsBloc, AllPatientsState>(
       builder: (context, allPatientState) {
         List<PatientsDetailsDTO> patientsList = [];
@@ -168,6 +170,15 @@ class PatientListSection extends ConsumerWidget {
                       .contains(search.toLowerCase().trim()))
               .toList();
         }
+
+        if (sortDate != null) {
+          patientsList = patientsList
+              .where((element) =>
+                  sortDate.day == DateTime.parse(element.date).day &&
+                  sortDate.month == DateTime.parse(element.date).month &&
+                  sortDate.year == DateTime.parse(element.date).year)
+              .toList();
+        }
         // List<GlobalKey> globalList = [];
         // for (var p in patientsList) {
         // GlobalKey buttonKey = GlobalKey();
@@ -179,19 +190,34 @@ class PatientListSection extends ConsumerWidget {
           child: ShimmerLoading(
             isLoading: isLoading,
             child: patientsList.isEmpty
-                ? Center(
-                    child: Image.asset(
-                      'assets/images/social-doctor-doing-a-health-check-up.gif',
-                    ),
+                ? Column(
+                    children: [
+                      const DisplaySortingDate(),
+                      SizedBox(
+                        height: size.height * 0.1,
+                      ),
+                      Center(
+                        child: Image.asset(
+                          'assets/images/social-doctor-doing-a-health-check-up.gif',
+                        ),
+                      ),
+                    ],
                   )
                 : ListView.separated(
-                    itemCount: isLoading ? 10 : patientsList.length + 1,
+                    itemCount: isLoading ? 10 : patientsList.length + 2,
                     itemBuilder: (context, index) {
-                      if (index == patientsList.length) {
+                      if (index == 0) {
+                        return const Center(
+                          child: DisplaySortingDate(),
+                        );
+                      }
+
+                      if (index == patientsList.length + 1) {
                         return SizedBox(
                           height: size.height * 0.1,
                         );
                       }
+
                       return Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: size.width * 0.01),
@@ -214,8 +240,8 @@ class PatientListSection extends ConsumerWidget {
                                 if (!isLoading) {
                                   BlocProvider.of<PatientBloc>(context).add(
                                       PatientEvent.getPatientsDetails(
-                                          patientId:
-                                              patientsList[index].patientId!));
+                                          patientId: patientsList[index - 1]
+                                              .patientId!));
                                   Navigator.push(
                                       context,
                                       CupertinoPageRoute(
@@ -227,7 +253,7 @@ class PatientListSection extends ConsumerWidget {
                               title: Text(
                                 isLoading
                                     ? ''
-                                    : patientsList[index].patientName,
+                                    : patientsList[index - 1].patientName,
                                 style: GoogleFonts.poppins(
                                   textStyle: TextStyle(
                                     fontSize: size.width * 0.045,
@@ -247,7 +273,7 @@ class PatientListSection extends ConsumerWidget {
                                   Text(
                                     isLoading
                                         ? ''
-                                        : 'Patient Number: ${patientsList[index].patientNumber}',
+                                        : 'Patient Number: ${patientsList[index - 1].patientNumber}',
                                     style: GoogleFonts.poppins(
                                       textStyle: TextStyle(
                                         fontSize: size.width * 0.038,
@@ -259,7 +285,7 @@ class PatientListSection extends ConsumerWidget {
                                   Text(
                                     isLoading
                                         ? ''
-                                        : 'Phone Number: ${patientsList[index].phoneNumber}',
+                                        : 'Phone Number: ${patientsList[index - 1].phoneNumber}',
                                     style: GoogleFonts.poppins(
                                       textStyle: TextStyle(
                                         fontSize: size.width * 0.038,
@@ -285,6 +311,43 @@ class PatientListSection extends ConsumerWidget {
         );
       },
     ));
+  }
+}
+
+class DisplaySortingDate extends ConsumerWidget {
+  const DisplaySortingDate({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = MediaQuery.of(context).size;
+    DateTime? sortDate = ref.watch(homeSortDateProvider);
+    return Column(
+      children: [
+        SizedBox(
+          height: size.height * 0.01,
+        ),
+        Container(
+            padding: EdgeInsets.symmetric(
+                vertical: size.width * 0.01, horizontal: size.width * 0.05),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: ToothNoteColors.backgroundColor),
+            child: Text(
+              sortDate == null
+                  ? 'All'
+                  : '${sortDate.day} ${getMonthInWords(sortDate.month)} ${sortDate.year}',
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                  fontSize: size.width * 0.035,
+                  color: ToothNoteColors.kWhiteColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            )),
+      ],
+    );
   }
 }
 
@@ -390,6 +453,24 @@ class SearchContainer extends ConsumerWidget {
           decoration: InputDecoration(
               contentPadding:
                   const EdgeInsets.only(left: 30, right: 10, top: 10),
+              prefixIcon: IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
+                    ),
+                    context: context,
+                    builder: (context) {
+                      return const SortingBottomSheet();
+                    },
+                  );
+                },
+                icon: const Icon(Icons.sort),
+                color: ToothNoteColors.kWhiteColor,
+              ),
               suffixIcon: Padding(
                 padding: const EdgeInsets.only(right: 0.0),
                 child: IconButton(

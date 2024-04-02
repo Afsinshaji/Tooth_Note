@@ -100,7 +100,7 @@ class _TreatmentDetailsScreenState extends State<TreatmentDetailsScreen> {
                     BlocProvider.of<PatientBloc>(context)
                         .add(PatientEvent.addPatient(
                             patient: PatientsDetailsDTO(   payments: patient.payments, newAppointment: patient.newAppointment,
-                      patientName: patient.patientName,
+                      patientName: patient.patientName, medicine: patient.medicine,
                       patientNumber: patient.patientNumber,  dob: patient.dob,
                       address: patient.address,
                       phoneNumber: patient.phoneNumber,doctor: patient.doctor,

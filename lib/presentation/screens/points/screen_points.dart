@@ -241,7 +241,7 @@ void showPopupMenu(
             patientName: patient.patientName, newAppointment: patient.newAppointment,
             patientNumber: patient.patientNumber,  dob: patient.dob,
             address: patient.address,
-            phoneNumber: patient.phoneNumber,doctor: patient.doctor,
+            phoneNumber: patient.phoneNumber,doctor: patient.doctor, medicine: patient.medicine,
             age: patient.age,
             sex: patient.sex,
             date: patient.date,

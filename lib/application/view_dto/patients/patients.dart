@@ -5,6 +5,7 @@ import 'package:tooth_note/application/view_dto/drug_history/drug_history.dart';
 import 'package:tooth_note/application/view_dto/examination_details/examination_details.dart';
 import 'package:tooth_note/application/view_dto/lab_investigation/lab_investigation.dart';
 import 'package:tooth_note/application/view_dto/medical_history.dart/medical_history.dart';
+import 'package:tooth_note/application/view_dto/medicine/medicine.dart';
 import 'package:tooth_note/application/view_dto/new_appointment/new_appointment.dart';
 import 'package:tooth_note/application/view_dto/past_dental_history/past_dental_history.dart';
 import 'package:tooth_note/application/view_dto/payments/payments.dart';
@@ -37,6 +38,7 @@ class PatientsDetailsDTO {
   final String dob;
   final String doctor;
   final NewAppointmentDTO? newAppointment;
+  final MedicineDTO? medicine;
 
   PatientsDetailsDTO(
       {required this.patientName,
@@ -44,7 +46,8 @@ class PatientsDetailsDTO {
       required this.address,
       required this.phoneNumber,
       required this.age,
-      required this.sex,required this.doctor,
+      required this.sex,
+      required this.doctor,this.medicine,
       this.labInvestigation,
       this.payments,
       this.patientId,
@@ -75,7 +78,7 @@ class PatientsDetailsDTO {
       patientId: patientId == null
           ? 'Patient:${DateTime.now().millisecondsSinceEpoch.toString()}'
           : patientId!,
-      date: date,
+      date: date,  medicine: medicine == null ? null : medicine!.toModel(),
       newAppointment: newAppointment == null ? null : newAppointment!.toModel(),
       payments: payments == null ? null : payments!.toModel(),
       labInvestigation:
@@ -110,6 +113,7 @@ class PatientsDetailsDTO {
       sex: patient.sex,
       patientId: patient.patientId,
       date: patient.date,
+      medicine: MedicineDTO.fromModel(patient.medicine),
       newAppointment: NewAppointmentDTO.fromModel(patient.newAppointment),
       payments: PaymentsDTO.fromModel(patient.payments),
       labInvestigation: LabInvestigationDTO.fromModel(patient.labInvestigation),

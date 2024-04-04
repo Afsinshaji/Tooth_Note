@@ -1,23 +1,37 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tooth_note/application/all_bookings/all_bookings_bloc.dart';
 
 import 'package:tooth_note/application/all_patients/all_patients_bloc.dart';
+import 'package:tooth_note/application/bookings/bookings_bloc.dart';
 import 'package:tooth_note/application/patient/patient_bloc.dart';
 import 'package:tooth_note/application/view_dto/patients/patients.dart';
 import 'package:tooth_note/presentation/screens/add_patient/widgets/add_textfield.dart';
+import 'package:tooth_note/presentation/screens/patients/screen_patients.dart';
 import 'package:tooth_note/presentation/view_states/add_patient/riverpod_add_patient.dart';
 import 'package:tooth_note/utilities/colors.dart';
 import 'package:tooth_note/utilities/list.dart';
 
 class AddPatientScreen extends StatefulWidget {
   const AddPatientScreen(
-      {super.key, this.isToEdit = false, this.patinetEditDTO});
+      {super.key,
+      this.isToEdit = false,
+      this.patinetEditDTO,
+      this.isToRegister = false,
+      this.patientAddress = '',
+      this.patientName = '',
+      this.patientId = ''});
   final bool isToEdit;
   final PatientsDetailsDTO? patinetEditDTO;
+  final bool isToRegister;
+  final String patientName;
+  final String patientAddress;
+  final String patientId;
 
   @override
   State<AddPatientScreen> createState() => _AddPatientScreenState();
@@ -46,6 +60,10 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
       patientNumController.text = widget.patinetEditDTO!.patientNumber;
       phoneNumController.text = widget.patinetEditDTO!.phoneNumber;
       docController.text = widget.patinetEditDTO!.doctor;
+    }
+    if (widget.isToRegister) {
+      nameController.text = widget.patientName;
+      addressController.text = widget.patientAddress;
     }
     super.initState();
   }
@@ -236,6 +254,8 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
           phoneNumController: phoneNumController,
           ageController: ageController,
           sexController: sexController,
+          isToRegister: widget.isToRegister,
+          patientsBookingId: widget.patientId,
           size: size),
     );
   }
@@ -286,6 +306,8 @@ class SaveButton extends ConsumerWidget {
       required this.size,
       required this.isToEdit,
       required this.docController,
+      required this.isToRegister,
+      required this.patientsBookingId,
       this.patientDTO});
 
   final GlobalKey<FormState> formKey;
@@ -298,6 +320,8 @@ class SaveButton extends ConsumerWidget {
   final TextEditingController docController;
   final Size size;
   final bool isToEdit;
+  final bool isToRegister;
+  final String patientsBookingId;
   final PatientsDetailsDTO? patientDTO;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -313,8 +337,7 @@ class SaveButton extends ConsumerWidget {
               BlocProvider.of<PatientBloc>(context).add(
                   PatientEvent.addNewPatient(
                       patient: PatientsDetailsDTO(
-                         medicine:
-                              !isToEdit ? null : patientDTO!.medicine,
+                          medicine: !isToEdit ? null : patientDTO!.medicine,
                           newAppointment:
                               !isToEdit ? null : patientDTO!.newAppointment,
                           chiefComplaints:
@@ -358,8 +381,20 @@ class SaveButton extends ConsumerWidget {
 
               BlocProvider.of<AllPatientsBloc>(context)
                   .add(const AllPatientsEvent.getPatientList());
-
               Navigator.pop(context);
+
+              if (isToRegister && patientsBookingId.isNotEmpty) {
+                BlocProvider.of<BookingsBloc>(context).add(
+                    BookingsEvent.deleteBookingsPatientDetail(
+                        patientId: patientsBookingId));
+                BlocProvider.of<AllBookingsBloc>(context)
+                    .add(const AllBookingsEvent.getBookedPatientList());
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => const PatientsScreen(),
+                    ));
+              }
             }
           },
           child: Container(

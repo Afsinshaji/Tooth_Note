@@ -6,7 +6,7 @@ import 'package:tooth_note/application/all_patients/all_patients_bloc.dart';
 import 'package:tooth_note/application/patient/patient_bloc.dart';
 import 'package:tooth_note/application/view_dto/patients/patients.dart';
 import 'package:tooth_note/presentation/screens/add_patient/screen_add_patient.dart';
-import 'package:tooth_note/presentation/screens/home/widgets/sorting_bottom_sheet.dart';
+import 'package:tooth_note/presentation/screens/patients/widgets/sorting_bottom_sheet.dart';
 import 'package:tooth_note/presentation/screens/login/screen_login.dart';
 import 'package:tooth_note/presentation/screens/view_patient/screen_view_patient.dart';
 import 'package:tooth_note/presentation/view_states/add_patient/riverpod_add_patient.dart';
@@ -16,14 +16,14 @@ import 'package:tooth_note/presentation/widgets/shimmer_loading.dart';
 import 'package:tooth_note/utilities/Colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class PatientsScreen extends StatefulWidget {
+  const PatientsScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<PatientsScreen> createState() => _PatientsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _PatientsScreenState extends State<PatientsScreen> {
   final TextEditingController searchController = TextEditingController();
   @override
   void initState() {
@@ -40,56 +40,85 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: size * 0.17,
-          child: Column(
-            children: [
-              AppBar(
+          child: ColoredBox(
+            color: ToothNoteColors.backgroundColor,
+            child: Column(
+              children: [
+                // AppBar(
 
-                  //  titleSpacing: size.width * 0.14,
-                  //   leadingWidth: size.width * 0.11,
-                  leading: const LogoWidget(),
-                  backgroundColor: ToothNoteColors.backgroundColor,
-                  actions: [
-                    Row(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            SizedBox(
-                              height: size.height * 0.027,
-                            ),
-                            Text(
-                              'Divine Dental Clinic',
-                              style: GoogleFonts.playfairDisplay(
-                                textStyle: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  letterSpacing: 1,
-                                  fontSize: size.width * 0.055,
-                                  color: ToothNoteColors.kWhiteColor,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            // Positioned(
-                            //   // left: 0,
-                            //   top: 0,
-                            //   right: 0,
-                            //   child: Center(
-                            //     child: Image.asset(
-                            //       'assets/images/WhatsApp_Image_2024-03-15_at_20.36.01-removebg-preview.png',
-                            //       height: size.height * 0.04,
-                            //     ),
-                            //   ),
-                            // ),
-                          ],
+                //     //  titleSpacing: size.width * 0.14,
+                //     //   leadingWidth: size.width * 0.11,
+                //     leading: const LogoWidget(),
+                //     backgroundColor: ToothNoteColors.backgroundColor,
+                //     actions: [
+                //       Row(
+                //         children: [
+                //           Column(
+                //             mainAxisAlignment: MainAxisAlignment.end,
+                //             children: [
+                //               SizedBox(
+                //                 height: size.height * 0.027,
+                //               ),
+                // Text(
+                //   'Divine Dental Clinic',
+                //   style: GoogleFonts.playfairDisplay(
+                //     textStyle: TextStyle(
+                //       fontStyle: FontStyle.italic,
+                //       letterSpacing: 1,
+                //       fontSize: size.width * 0.055,
+                //       color: ToothNoteColors.kWhiteColor,
+                //       fontWeight: FontWeight.w700,
+                //     ),
+                //   ),
+                // ),
+                //               // Positioned(
+                //               //   // left: 0,
+                //               //   top: 0,
+                //               //   right: 0,
+                //               //   child: Center(
+                //               //     child: Image.asset(
+                //               //       'assets/images/WhatsApp_Image_2024-03-15_at_20.36.01-removebg-preview.png',
+                //               //       height: size.height * 0.04,
+                //               //     ),
+                //               //   ),
+                //               // ),
+                //             ],
+                //           ),
+                //           SizedBox(
+                //             width: size.width * 0.03,
+                //           )
+                //         ],
+                //       )
+                //     ]),
+
+                Container(
+                  color: ToothNoteColors.backgroundColor,
+                  width: size.width,
+                  height: size.height * 0.085,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: size.height * 0.045,
+                      ),
+                      Text(
+                        'Patients List',
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            letterSpacing: 1,
+                            fontSize: size.width * 0.055,
+                            color: ToothNoteColors.kWhiteColor,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                        SizedBox(
-                          width: size.width * 0.03,
-                        )
-                      ],
-                    )
-                  ]),
-              SearchContainer(size: size, searchController: searchController)
-            ],
+                      ),
+                    ],
+                  ),
+                ),
+                SearchContainer(size: size, searchController: searchController)
+              ],
+            ),
           ),
         ),
         backgroundColor: ToothNoteColors.kLightBluwWhite,
@@ -190,19 +219,21 @@ class PatientListSection extends ConsumerWidget {
           child: ShimmerLoading(
             isLoading: isLoading,
             child: patientsList.isEmpty
-                ? Column(
-                    children: [
-                      const DisplaySortingDate(),
-                      SizedBox(
-                        height: size.height * 0.1,
-                      ),
-                      Center(
-                        child: Image.asset(
-                          'assets/images/social-doctor-doing-a-health-check-up.gif',
+                ? SingleChildScrollView(
+                  child: Column(
+                      children: [
+                        const DisplaySortingDate(),
+                        SizedBox(
+                          height: size.height * 0.1,
                         ),
-                      ),
-                    ],
-                  )
+                        Center(
+                          child: Image.asset(
+                            'assets/images/social-doctor-doing-a-health-check-up.gif',
+                          ),
+                        ),
+                      ],
+                    ),
+                )
                 : ListView.separated(
                     itemCount: isLoading ? 10 : patientsList.length + 2,
                     itemBuilder: (context, index) {

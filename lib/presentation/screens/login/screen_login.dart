@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tooth_note/infrastructure/services/secure_storage.dart';
-import 'package:tooth_note/presentation/screens/home/screen_home.dart';
+import 'package:tooth_note/presentation/screens/home/home_screen.dart';
 import 'package:tooth_note/presentation/widgets/alert_snackbar.dart';
 import 'package:tooth_note/utilities/colors.dart';
 
@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const HomeScreen(),
+                                                      const HomePageScreen(),
                                                 ),
                                               ));
                                 } else {

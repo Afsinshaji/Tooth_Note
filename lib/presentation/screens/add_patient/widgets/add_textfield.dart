@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tooth_note/presentation/screens/add_booking/widgets/time_slot.dart';
 
 import 'package:tooth_note/utilities/colors.dart';
 
@@ -16,7 +17,8 @@ class AddTextField extends StatelessWidget {
     this.fontSize,
     this.isSex = false,
     this.isDoc = false,
-    this.isToValidate=false,
+    this.isToValidate = false,
+    this.isSlot = false,
   });
 
   final TextEditingController controller;
@@ -25,6 +27,7 @@ class AddTextField extends StatelessWidget {
   final String text;
   final bool isSex;
   final bool isDoc;
+  final bool isSlot;
   final bool isToValidate;
   final Color fieldColor;
   final Widget? prefix;
@@ -138,10 +141,25 @@ class AddTextField extends StatelessWidget {
                   );
                 },
               );
+            } else if (isSlot) {
+              showModalBottomSheet(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
+                  ),
+                ),
+                context: context,
+                builder: (context) {
+                  return TimeSlotBottomSheet(
+                    controller: controller,
+                  );
+                },
+              );
             }
           },
-          showCursor: isSex || isDoc ? false : true,
-          readOnly: isSex || isDoc ? true : false,
+          showCursor: isSex || isDoc || isSlot ? false : true,
+          readOnly: isSex || isDoc || isSlot ? true : false,
           onChanged: (value) {},
           controller: controller,
           enableSuggestions: !isTextNumberType,
@@ -172,16 +190,18 @@ class AddTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5.0),
                 borderSide: const BorderSide(width: 0, style: BorderStyle.none),
               )),
-          keyboardType: isSex || isDoc
+          keyboardType: isSex || isDoc || isSlot
               ? TextInputType.none
               : isTextNumberType
                   ? TextInputType.number
                   : TextInputType.emailAddress,
           validator: (text) {
             // if (!isTextNumberType) {
-       if(isToValidate)  {   if (text == null || text.isEmpty) {
-              return "Can't be Empty";
-            }}
+            if (isToValidate) {
+              if (text == null || text.isEmpty) {
+                return "Can't be Empty";
+              }
+            }
             // }
 
             // if (isTextNumberType && text.length < 10) {

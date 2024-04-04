@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tooth_note/application/all_bookings/all_bookings_bloc.dart';
 import 'package:tooth_note/application/all_patients/all_patients_bloc.dart';
+import 'package:tooth_note/application/bookings/bookings_bloc.dart';
 import 'package:tooth_note/application/patient/patient_bloc.dart';
 
 import 'package:tooth_note/presentation/screens/splash_screen/splash_screen.dart';
@@ -25,6 +27,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => PatientBloc(),
+        ),
+        BlocProvider(
+          create: (context) => AllBookingsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => BookingsBloc(),
         ),
       ],
       child: MaterialApp(

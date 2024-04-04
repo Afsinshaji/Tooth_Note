@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tooth_note/presentation/view_states/bookings/riverpod_bookings.dart';
 import 'package:tooth_note/presentation/view_states/home/riverpod_home.dart';
 import 'package:tooth_note/utilities/colors.dart';
 
 class SortingBottomSheet extends ConsumerWidget {
-  const SortingBottomSheet({super.key});
+  const SortingBottomSheet({super.key, this.isFromBooking = false});
+  final bool isFromBooking;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,7 +37,12 @@ class SortingBottomSheet extends ConsumerWidget {
           ),
           SortTimeTile(
               onTap: () {
-                addSortingDate(DateTime.now(), ref);
+                if (isFromBooking) {
+                  addBookingSortingDate(DateTime.now(), ref);
+                } else {
+                  addSortingDate(DateTime.now(), ref);
+                }
+
                 Navigator.pop(context);
               },
               title: 'Today',
@@ -46,8 +53,13 @@ class SortingBottomSheet extends ConsumerWidget {
             subTitle:
                 '${getMonthInWords(DateTime.now().subtract(const Duration(days: 1)).month)} ${DateTime.now().subtract(const Duration(days: 1)).day}',
             onTap: () {
-              addSortingDate(
-                  DateTime.now().subtract(const Duration(days: 1)), ref);
+              if (isFromBooking) {
+                addBookingSortingDate(
+                    DateTime.now().subtract(const Duration(days: 1)), ref);
+              } else {
+                addSortingDate(
+                    DateTime.now().subtract(const Duration(days: 1)), ref);
+              }
               Navigator.pop(context);
             },
           ),
@@ -55,14 +67,18 @@ class SortingBottomSheet extends ConsumerWidget {
             title: 'Custom Date',
             subTitle: '',
             onTap: () {
-              showPopup(context, size);
+              showPopup(context, size,isFromBooking);
             },
           ),
           SortTimeTile(
             title: 'All Dates',
             subTitle: '',
             onTap: () {
-              addSortingDate(null, ref);
+              if (isFromBooking) {
+                addBookingSortingDate(null, ref);
+              } else {
+                addSortingDate(null, ref);
+              }
               Navigator.pop(context);
             },
           ),
@@ -149,7 +165,7 @@ String getMonthInWords(int month) {
 
 Future<void> showPopup(
   BuildContext context,
-  Size size,
+  Size size,bool isBooking,
 ) async {
   return showDialog<void>(
     context: context,
@@ -158,16 +174,16 @@ Future<void> showPopup(
           content: SizedBox(
               width: size.width * 0.8,
               height: size.width * 0.8,
-              child: const DatePickerWidget()));
+              child:  DatePickerWidget(isBooking: isBooking,)));
     },
   );
 }
 
 class DatePickerWidget extends ConsumerWidget {
   const DatePickerWidget({
-    super.key,
+    super.key,required this.isBooking
   });
-
+  final bool isBooking;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CalendarDatePicker(
@@ -176,7 +192,11 @@ class DatePickerWidget extends ConsumerWidget {
       lastDate: DateTime(3000),
       onDateChanged: (value) {
         // log('Value${value.value}');
-        addSortingDate(value, ref);
+        if (isBooking) {
+          addBookingSortingDate(value, ref);
+        } else {
+          addSortingDate(value, ref);
+        }
         Navigator.pop(context);
         Navigator.pop(context);
       },

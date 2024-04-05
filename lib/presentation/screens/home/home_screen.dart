@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +13,7 @@ import 'package:tooth_note/presentation/screens/patients/screen_patients.dart';
 import 'package:tooth_note/presentation/screens/patients/widgets/sorting_bottom_sheet.dart';
 import 'package:tooth_note/presentation/screens/login/screen_login.dart';
 import 'package:tooth_note/presentation/view_states/add_patient/riverpod_add_patient.dart';
+import 'package:tooth_note/presentation/view_states/bookings/riverpod_bookings.dart';
 import 'package:tooth_note/presentation/view_states/home/riverpod_home.dart';
 import 'package:tooth_note/presentation/widgets/alert_box.dart';
 import 'package:tooth_note/presentation/widgets/shimmer_loading.dart';
@@ -33,6 +33,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
   void initState() {
     BlocProvider.of<AllPatientsBloc>(context)
         .add(const AllPatientsEvent.getPatientList());
+    BlocProvider.of<AllBookingsBloc>(context)
+        .add(const AllBookingsEvent.getBookedPatientList());
     super.initState();
   }
 
@@ -120,132 +122,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     ],
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BookingsScreen(),
-                      ),
-                    );
-                  },
-                  child: BlocBuilder<AllBookingsBloc, AllBookingsState>(
-                    builder: (context, bookstate) {
-                      List<BookingsDTO> bookingList = [];
-                      if (bookstate is displayAllBookedPatient) {
-                        bookingList = bookstate.patient;
-                      }
-
-                      return Container(
-                        height: size.height * 0.23,
-                        width: size.width,
-                        margin: EdgeInsets.all(size.width * 0.0),
-                        padding: EdgeInsets.all(size.width * 0.02),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: ToothNoteColors.kWhiteColor,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey
-                                    .withOpacity(0.5), // Shadow color
-                                spreadRadius: 5, // Spread radius
-                                blurRadius: 7, // Blur radius
-                                offset:
-                                    const Offset(0, 3), // Offset of the shadow
-                              )
-                            ]),
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: Text(
-                                  bookingList
-                                      .where((element) =>
-                                          DateTime.parse(element.date).day ==
-                                              DateTime.now().day &&
-                                          DateTime.parse(element.date).month ==
-                                              DateTime.now().month &&
-                                          DateTime.parse(element.date).year ==
-                                              DateTime.now().year)
-                                      .toList()
-                                      .length
-                                      .toString(),
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.09,
-                                      color: ToothNoteColors.backgroundColor,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  )),
-                              title: Text('Today',
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.04,
-                                      color: ToothNoteColors.kBlackColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )),
-                              trailing: const Icon(
-                                Icons.remove_red_eye,
-                                color: ToothNoteColors.backgroundColor,
-                              ),
-                            ),
-                            ListTile(
-                              leading: Text(
-                                  bookingList
-                                      .where((element) =>
-                                          DateTime.parse(element.date)
-                                              .isAfter(DateTime.now()))
-                                      .toList()
-                                      .length
-                                      .toString(),
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.09,
-                                      color: ToothNoteColors.backgroundColor,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  )),
-                              title: Text('Upcoming',
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.04,
-                                      color: ToothNoteColors.kBlackColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )),
-                              trailing: const Icon(
-                                Icons.send,
-                                color: ToothNoteColors.backgroundColor,
-                              ),
-                            ),
-                            ListTile(
-                              leading: Text(bookingList.length.toString(),
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.09,
-                                      color: ToothNoteColors.backgroundColor,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  )),
-                              title: Text('Total',
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.04,
-                                      color: ToothNoteColors.kBlackColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )),
-                              trailing: const Icon(
-                                Icons.bookmark,
-                                color: ToothNoteColors.backgroundColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                BookingsContainer(size: size),
                 SizedBox(
                   height: size.height * 0.05,
                 ),
@@ -278,107 +155,257 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     ],
                   ),
                 ),
-                BlocBuilder<AllPatientsBloc, AllPatientsState>(
-                  builder: (context, patientState) {
-                    List<PatientsDetailsDTO> patientList = [];
-                    if (patientState is displayallPatient) {
-                      patientList = patientState.patient;
-                    }
-                    return Container(
-                      height: size.height * 0.16,
-                      width: size.width,
-                      margin: EdgeInsets.all(size.width * 0.0),
-                      padding: EdgeInsets.all(size.width * 0.02),
-                      decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color:
-                                  Colors.grey.withOpacity(0.5), // Shadow color
-                              spreadRadius: 5, // Spread radius
-                              blurRadius: 7, // Blur radius
-                              offset:
-                                  const Offset(0, 3), // Offset of the shadow
-                            )
-                          ],
-                          borderRadius: BorderRadius.circular(5),
-                          color: ToothNoteColors.kWhiteColor),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const PatientsScreen(),
-                            ),
-                          );
-                        },
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: Text(
-                                  patientList
-                                      .where((element) =>
-                                          DateTime.parse(element.date).day ==
-                                              DateTime.now().day &&
-                                          DateTime.parse(element.date).month ==
-                                              DateTime.now().month &&
-                                          DateTime.parse(element.date).year ==
-                                              DateTime.now().year)
-                                      .toList()
-                                      .length
-                                      .toString(),
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.09,
-                                      color: ToothNoteColors.backgroundColor,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  )),
-                              title: Text('Today',
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.04,
-                                      color: ToothNoteColors.kBlackColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )),
-                              trailing: const Icon(
-                                Icons.remove_red_eye,
-                                color: ToothNoteColors.backgroundColor,
-                              ),
-                            ),
-                            ListTile(
-                              leading: Text('${patientList.length}',
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.09,
-                                      color: ToothNoteColors.backgroundColor,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  )),
-                              title: Text('Total Patients',
-                                  style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.04,
-                                      color: ToothNoteColors.kBlackColor,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )),
-                              trailing: const Icon(
-                                Icons.bookmark,
-                                color: ToothNoteColors.backgroundColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                )
+                PatientsContainer(size: size)
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class PatientsContainer extends ConsumerWidget {
+  const PatientsContainer({
+    super.key,
+    required this.size,
+  });
+
+  final Size size;
+
+  @override
+  Widget build(BuildContext context,WidgetRef ref) {
+    return BlocBuilder<AllPatientsBloc, AllPatientsState>(
+      builder: (context, patientState) {
+        List<PatientsDetailsDTO> patientList = [];
+        if (patientState is displayallPatient) {
+          patientList = patientState.patient;
+        }
+        return Container(
+          height: size.height * 0.16,
+          width: size.width,
+          margin: EdgeInsets.all(size.width * 0.0),
+          padding: EdgeInsets.all(size.width * 0.02),
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5), // Shadow color
+                  spreadRadius: 5, // Spread radius
+                  blurRadius: 7, // Blur radius
+                  offset: const Offset(0, 3), // Offset of the shadow
+                )
+              ],
+              borderRadius: BorderRadius.circular(5),
+              color: ToothNoteColors.kWhiteColor),
+          child: InkWell(
+            onTap: () {
+              addSortingDate(DateTime.now(), ref);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PatientsScreen(),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Text(
+                      patientList
+                          .where((element) =>
+                              DateTime.parse(element.date).day ==
+                                  DateTime.now().day &&
+                              DateTime.parse(element.date).month ==
+                                  DateTime.now().month &&
+                              DateTime.parse(element.date).year ==
+                                  DateTime.now().year)
+                          .toList()
+                          .length
+                          .toString(),
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.09,
+                          color: ToothNoteColors.backgroundColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )),
+                  title: Text('Today',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.04,
+                          color: ToothNoteColors.kBlackColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  trailing: const Icon(
+                    Icons.remove_red_eye,
+                    color: ToothNoteColors.backgroundColor,
+                  ),
+                ),
+                ListTile(
+                  leading: Text('${patientList.length}',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.09,
+                          color: ToothNoteColors.backgroundColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )),
+                  title: Text('Total Patients',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.04,
+                          color: ToothNoteColors.kBlackColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  trailing: const Icon(
+                    Icons.bookmark,
+                    color: ToothNoteColors.backgroundColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class BookingsContainer extends ConsumerWidget {
+  const BookingsContainer({
+    super.key,
+    required this.size,
+  });
+
+  final Size size;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BlocBuilder<AllBookingsBloc, AllBookingsState>(
+      builder: (context, bookstate) {
+        List<BookingsDTO> bookingList = [];
+        if (bookstate is displayAllBookedPatient) {
+          bookingList = bookstate.patient;
+        }
+
+        return InkWell(
+          onTap: () {
+            addBookingSortingDate(DateTime.now(), ref);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BookingsScreen(),
+              ),
+            );
+          },
+          child: Container(
+            height: size.height * 0.23,
+            width: size.width,
+            margin: EdgeInsets.all(size.width * 0.0),
+            padding: EdgeInsets.all(size.width * 0.02),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: ToothNoteColors.kWhiteColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5), // Shadow color
+                    spreadRadius: 5, // Spread radius
+                    blurRadius: 7, // Blur radius
+                    offset: const Offset(0, 3), // Offset of the shadow
+                  )
+                ]),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Text(
+                      bookingList
+                          .where((element) =>
+                              DateTime.parse(element.date).day ==
+                                  DateTime.now().day &&
+                              DateTime.parse(element.date).month ==
+                                  DateTime.now().month &&
+                              DateTime.parse(element.date).year ==
+                                  DateTime.now().year)
+                          .toList()
+                          .length
+                          .toString(),
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.09,
+                          color: ToothNoteColors.backgroundColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )),
+                  title: Text('Today',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.04,
+                          color: ToothNoteColors.kBlackColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  trailing: const Icon(
+                    Icons.remove_red_eye,
+                    color: ToothNoteColors.backgroundColor,
+                  ),
+                ),
+                ListTile(
+                  leading: Text(
+                      bookingList
+                          .where((element) => DateTime.parse(element.date)
+                              .isAfter(DateTime.now()))
+                          .toList()
+                          .length
+                          .toString(),
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.09,
+                          color: ToothNoteColors.backgroundColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )),
+                  title: Text('Upcoming',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.04,
+                          color: ToothNoteColors.kBlackColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  trailing: const Icon(
+                    Icons.send,
+                    color: ToothNoteColors.backgroundColor,
+                  ),
+                ),
+                ListTile(
+                  leading: Text(bookingList.length.toString(),
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.09,
+                          color: ToothNoteColors.backgroundColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )),
+                  title: Text('Total',
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.04,
+                          color: ToothNoteColors.kBlackColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+                  trailing: const Icon(
+                    Icons.bookmark,
+                    color: ToothNoteColors.backgroundColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

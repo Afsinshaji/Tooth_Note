@@ -280,6 +280,11 @@ class SaveButton extends ConsumerWidget {
                       address: addressController.text)));
           BlocProvider.of<AllBookingsBloc>(context)
               .add(const AllBookingsEvent.getBookedPatientList());
+          if (isToEdit) {
+            BlocProvider.of<BookingsBloc>(context).add(
+                BookingsEvent.getBookingsPatientsDetails(
+                    patientId: patientDTO!.patientId));
+          }
 
           Navigator.pop(context);
         }

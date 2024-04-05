@@ -542,6 +542,23 @@ class ViewPatientScreen extends ConsumerWidget {
                         height: size.height * 0.025,
                       ),
                       Detailscontainer(
+                          isChecked: patientDTO!.payments != null &&
+                              patientDTO!.payments!.payments.isNotEmpty,
+                          onTap: () {
+                            initializeDate(ref);
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => const PaymentsScreen(),
+                                ));
+                          },
+                          prefixIcon: Icons.currency_rupee,
+                          subtitle: 'Add Payments & due',
+                          title: 'Payments'),
+                      SizedBox(
+                        height: size.height * 0.025,
+                      ),
+                      Detailscontainer(
                           isChecked: patientDTO!.newAppointment != null &&
                               patientDTO!
                                   .newAppointment!.newAppointment.isNotEmpty,
@@ -557,23 +574,6 @@ class ViewPatientScreen extends ConsumerWidget {
                           prefixIcon: Icons.table_chart,
                           subtitle: 'Add New Appointment',
                           title: 'New Appointment'),
-                      SizedBox(
-                        height: size.height * 0.025,
-                      ),
-                      Detailscontainer(
-                          isChecked: patientDTO!.payments != null &&
-                              patientDTO!.payments!.payments.isNotEmpty,
-                          onTap: () {
-                            initializeDate(ref);
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => const PaymentsScreen(),
-                                ));
-                          },
-                          prefixIcon: Icons.currency_rupee,
-                          subtitle: 'Add Payments & due',
-                          title: 'Payments'),
                       SizedBox(
                         height: size.height * 0.025,
                       ),

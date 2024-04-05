@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tooth_note/infrastructure/services/secure_storage.dart';
 import 'package:tooth_note/presentation/screens/home/home_screen.dart';
-import 'package:tooth_note/presentation/screens/patients/screen_patients.dart';
 import 'package:tooth_note/presentation/screens/login/screen_login.dart';
 import 'package:tooth_note/presentation/view_states/splash/riverpod_splash.dart';
 

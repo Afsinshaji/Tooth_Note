@@ -365,7 +365,10 @@ class SaveButton extends ConsumerWidget {
                           patientName: nameController.text,
                           patientNumber: isToEdit
                               ? patientDTO!.patientNumber
-                              : 'DDC 000${patientList.length + 1}',
+                              : 
+                           //  'DDC 000${patientList.length + 1}'
+                           getPatientNum(patientList)   
+                              ,
                           address: addressController.text,
                           phoneNumber: phoneNumController.text,
                           age: double.parse(ageController.text.isEmpty
@@ -421,6 +424,21 @@ class SaveButton extends ConsumerWidget {
         );
       },
     );
+  }
+ String getPatientNum(List<PatientsDetailsDTO> patientList){
+    final pNum='DDC 000${patientList.length + 1}';
+    if(patientList.where((element) => element.patientNumber==pNum).toList().isEmpty){
+      return pNum;
+    }else{
+return createPatientNum(patientList,'DDC 000${patientList.length + 2}',patientList.length + 2);
+    }
+  }
+String  createPatientNum(List<PatientsDetailsDTO> patientList,String pNum,int startingLength){
+ if(patientList.where((element) => element.patientNumber==pNum).toList().isEmpty){
+      return pNum;
+    }else{
+return createPatientNum( patientList,'DDC 000${startingLength + 1}',startingLength+1);
+    }
   }
 }
 
